@@ -1,0 +1,248 @@
+version: "1.5"
+namespace:
+  key: venus
+  name: venus
+flags:
+  - key: flag1
+    name: flag1
+    type: VARIANT_FLAG_TYPE
+    description: flag description
+    enabled: true
+    variants:
+      - key: variant1
+        name: variant1
+        description: variant description
+    rules:
+      - segment:
+          keys:
+            - segment1
+        distributions:
+          - variant: variant1
+            rollout: 100
+  - key: flag_boolean
+    name: flag_boolean
+    type: BOOLEAN_FLAG_TYPE
+    description: flag description
+    enabled: true
+    rollouts:
+      - segment:
+          keys:
+            - segment1
+          operator: OR_SEGMENT_OPERATOR
+          value: true
+      - threshold:
+          percentage: 50
+          value: true
+  - key: flag_variant_string_eq
+    name: flag_variant_string_eq
+    type: VARIANT_FLAG_TYPE
+    enabled: true
+    variants:
+      - key: "on"
+        name: "on"
+      - default: true
+        key: "off"
+        name: "off"
+    rules:
+      - segment:
+          keys:
+            - seg_string_eq
+          operator: OR_SEGMENT_OPERATOR
+        distributions:
+          - variant: "on"
+            rollout: 100
+  - key: flag_variant_number_gt
+    name: flag_variant_number_gt
+    type: VARIANT_FLAG_TYPE
+    enabled: true
+    variants:
+      - key: high
+        name: high
+      - key: low
+        name: low
+    rules:
+      - segment:
+          keys:
+            - seg_number_gt
+        distributions:
+          - variant: high
+            rollout: 100
+  - key: flag_variant_boolean_true
+    name: flag_variant_boolean_true
+    type: VARIANT_FLAG_TYPE
+    enabled: true
+    variants:
+      - key: enabled
+        name: enabled
+      - key: disabled
+        name: disabled
+    rules:
+      - segment:
+          keys:
+            - seg_boolean_true
+        distributions:
+          - variant: enabled
+            rollout: 100
+  - key: flag_variant_datetime_gt
+    name: flag_variant_datetime_gt
+    type: VARIANT_FLAG_TYPE
+    enabled: true
+    variants:
+      - key: future
+        name: future
+      - key: past
+        name: past
+    rules:
+      - segment:
+          keys:
+            - seg_datetime_gt
+        distributions:
+          - variant: future
+            rollout: 100
+  - key: flag_variant_entity_prefix
+    name: flag_variant_entity_prefix
+    type: VARIANT_FLAG_TYPE
+    enabled: true
+    variants:
+      - key: match
+        name: match
+      - key: nomatch
+        name: nomatch
+    rules:
+      - segment:
+          keys:
+            - seg_entity_prefix
+        distributions:
+          - variant: match
+            rollout: 100
+  - key: flag_variant_any
+    name: flag_variant_any
+    type: VARIANT_FLAG_TYPE
+    enabled: true
+    variants:
+      - key: match
+        name: match
+      - key: nomatch
+        name: nomatch
+    rules:
+      - segment:
+          keys:
+            - seg_any_match
+        distributions:
+          - variant: match
+            rollout: 100
+  - key: flag_variant_all
+    name: flag_variant_all
+    type: VARIANT_FLAG_TYPE
+    enabled: true
+    variants:
+      - key: match
+        name: match
+      - default: true
+        key: nomatch
+        name: nomatch
+    rules:
+      - segment:
+          keys:
+            - seg_all_match
+          operator: OR_SEGMENT_OPERATOR
+        distributions:
+          - variant: match
+            rollout: 100
+  - key: flag_variant_disabled
+    name: flag_variant_disabled
+    type: VARIANT_FLAG_TYPE
+    enabled: false
+    variants:
+      - key: "off"
+        name: "off"
+  - key: flag_boolean_segment
+    name: flag_boolean_segment
+    type: BOOLEAN_FLAG_TYPE
+    enabled: false
+    rollouts:
+      - segment:
+          keys:
+            - seg_string_eq
+          value: true
+      - threshold:
+          percentage: 100
+          value: true
+  - key: flag_boolean_default
+    name: flag_boolean_default
+    type: BOOLEAN_FLAG_TYPE
+    enabled: true
+segments:
+  - key: segment1
+    name: segment1
+    description: description
+    constraints:
+      - type: STRING_COMPARISON_TYPE
+        property: fizz
+        operator: eq
+        value: buzz
+    match_type: ANY_MATCH_TYPE
+  - key: seg_string_eq
+    name: seg_string_eq
+    constraints:
+      - type: STRING_COMPARISON_TYPE
+        property: env
+        operator: eq
+        value: prod
+    match_type: ANY_MATCH_TYPE
+  - key: seg_number_gt
+    name: seg_number_gt
+    constraints:
+      - type: NUMBER_COMPARISON_TYPE
+        property: age
+        operator: gt
+        value: "25"
+    match_type: ANY_MATCH_TYPE
+  - key: seg_boolean_true
+    name: seg_boolean_true
+    constraints:
+      - type: BOOLEAN_COMPARISON_TYPE
+        property: beta
+        operator: "true"
+        value: "true"
+    match_type: ANY_MATCH_TYPE
+  - key: seg_datetime_gt
+    name: seg_datetime_gt
+    constraints:
+      - type: DATETIME_COMPARISON_TYPE
+        property: ts
+        operator: gt
+        value: "2024-01-01T00:00:00Z"
+    match_type: ANY_MATCH_TYPE
+  - key: seg_entity_prefix
+    name: seg_entity_prefix
+    constraints:
+      - type: ENTITY_ID_COMPARISON_TYPE
+        property: entity
+        operator: prefix
+        value: user-
+    match_type: ANY_MATCH_TYPE
+  - key: seg_any_match
+    name: seg_any_match
+    constraints:
+      - type: STRING_COMPARISON_TYPE
+        property: env
+        operator: eq
+        value: prod
+      - type: NUMBER_COMPARISON_TYPE
+        property: age
+        operator: gt
+        value: "21"
+    match_type: ANY_MATCH_TYPE
+  - key: seg_all_match
+    name: seg_all_match
+    constraints:
+      - type: STRING_COMPARISON_TYPE
+        property: env
+        operator: eq
+        value: prod
+      - type: NUMBER_COMPARISON_TYPE
+        property: age
+        operator: gt
+        value: "21"
+    match_type: ALL_MATCH_TYPE
