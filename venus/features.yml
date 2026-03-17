@@ -297,7 +297,7 @@ segments:
       description: Segment Cumulative Rounding
       constraints:
         - type: STRING_COMPARISON_TYPE
-          property: targe
+          property: target
           operator: eq
           value: "yes"
       match_type: ALL_MATCH_TYPE
